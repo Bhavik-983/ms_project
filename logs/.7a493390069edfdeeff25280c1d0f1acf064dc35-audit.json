@@ -1,0 +1,15 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 14
+    },
+    "auditLog": "/Users/sahilpatoliya/Documents/Insta_Clone/demo/y/logs/.7a493390069edfdeeff25280c1d0f1acf064dc35-audit.json",
+    "files": [
+        {
+            "date": 1740558648582,
+            "name": "/Users/sahilpatoliya/Documents/Insta_Clone/demo/y/logs/app-2025-02-26.log",
+            "hash": "4587c083eda097ec999a2475912ad39abbe389ed06961aede737a0ef6d733b9d"
+        }
+    ],
+    "hashType": "sha256"
+}

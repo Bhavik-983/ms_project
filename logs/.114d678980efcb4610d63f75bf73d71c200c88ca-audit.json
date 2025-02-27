@@ -1,0 +1,20 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 14
+    },
+    "auditLog": "/Users/sahilpatoliya/Documents/Insta_Clone/logs/.114d678980efcb4610d63f75bf73d71c200c88ca-audit.json",
+    "files": [
+        {
+            "date": 1740559659425,
+            "name": "/Users/sahilpatoliya/Documents/Insta_Clone/logs/app-2025-02-26.log",
+            "hash": "b491842e0d19e409db734eaaef96e3c025c81daf3f6fbb463199f618de0b51d7"
+        },
+        {
+            "date": 1740628059988,
+            "name": "/Users/sahilpatoliya/Documents/Insta_Clone/logs/app-2025-02-27.log",
+            "hash": "8449486384e0792babcaa5e2f36f6f1e9792b2ebee8dfe82f2c4fd6cfaf24253"
+        }
+    ],
+    "hashType": "sha256"
+}

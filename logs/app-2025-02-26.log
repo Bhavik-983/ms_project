@@ -1,0 +1,41 @@
+{"level":["info"],"timestamp":"26:02:2025|14:02:79","exception":false,"message":"MongoDB connected"}
+{"level":["info"],"timestamp":"26:02:2025|14:02:15","exception":false,"message":"MongoDB connected"}
+{"level":["info"],"timestamp":"26:02:2025|14:02:59","exception":false,"message":"MongoDB connected"}
+{"level":["info"],"timestamp":"26:02:2025|14:02:51","exception":false,"message":"MongoDB connected"}
+{"level":["error"],"timestamp":"26:02:2025|14:02:84","exception":true,"message":"uncaughtException: Connection.prototype.close() no longer accepts a callback"}
+{"level":["info"],"timestamp":"26:02:2025|14:02:67","exception":false,"message":"MongoDB connected"}
+{"level":["info"],"timestamp":"26:02:2025|14:02:84","exception":false,"message":"MongoDB connected"}
+{"level":["error"],"timestamp":"26:02:2025|14:02:46","exception":true,"message":"uncaughtException: Connection.prototype.close() no longer accepts a callback"}
+{"level":["error"],"timestamp":"26:02:2025|14:02:46","exception":true,"message":"uncaughtException: Connection.prototype.close() no longer accepts a callback"}
+{"level":["info"],"timestamp":"26:02:2025|14:02:01","exception":false,"message":"MongoDB connected"}
+{"level":["info"],"timestamp":"26:02:2025|14:02:01","exception":false,"message":"MongoDB connected"}
+{"level":["error"],"timestamp":"26:02:2025|14:02:29","exception":true,"message":"uncaughtException: Connection.prototype.close() no longer accepts a callback"}
+{"level":["info"],"timestamp":"26:02:2025|14:02:40","exception":false,"message":"MongoDB connected"}
+{"level":["error"],"timestamp":"26:02:2025|14:02:71","exception":true,"message":"uncaughtException: Connection.prototype.close() no longer accepts a callback"}
+{"level":["info"],"timestamp":"26:02:2025|14:02:55","exception":false,"message":"MongoDB connected"}
+{"level":["info"],"timestamp":"26:02:2025|14:02:55","exception":false,"message":"MongoDB connected"}
+{"level":["error"],"timestamp":"26:02:2025|14:02:62","exception":true,"message":"uncaughtException: Connection.prototype.close() no longer accepts a callback"}
+{"level":["error"],"timestamp":"26:02:2025|14:02:62","exception":true,"message":"uncaughtException: Connection.prototype.close() no longer accepts a callback"}
+{"level":["info"],"timestamp":"26:02:2025|14:02:64","exception":false,"message":"MongoDB connected"}
+{"level":["info"],"timestamp":"26:02:2025|14:02:64","exception":false,"message":"MongoDB connected"}
+{"level":["error"],"timestamp":"26:02:2025|17:02:71","exception":true,"message":"uncaughtException: createMainAdmin is not defined"}
+{"level":["info"],"timestamp":"26:02:2025|17:02:75","exception":false,"message":"MongoDB connected"}
+{"level":["info"],"timestamp":"26:02:2025|17:02:04","exception":false,"message":"MongoDB connected"}
+{"level":["info"],"timestamp":"26:02:2025|17:02:07","exception":false,"message":"MongoDB connected"}
+{"level":["info"],"timestamp":"26:02:2025|17:02:94","exception":false,"message":"MongoDB connected"}
+{"level":["info"],"timestamp":"26:02:2025|17:02:24","exception":false,"message":"MongoDB connected"}
+{"level":["info"],"timestamp":"26:02:2025|17:02:92","exception":false,"message":"MongoDB connected"}
+{"level":["info"],"timestamp":"26:02:2025|17:02:30","exception":false,"message":"MongoDB connected"}
+{"level":["info"],"timestamp":"26:02:2025|17:02:14","exception":false,"message":"MongoDB connected"}
+{"level":["info"],"timestamp":"26:02:2025|17:02:89","exception":false,"message":"MongoDB connected"}
+{"level":["info"],"timestamp":"26:02:2025|17:02:88","exception":false,"message":"MongoDB connected"}
+{"level":["error"],"timestamp":"26:02:2025|17:02:94","exception":true,"message":"uncaughtException: someFunction is not defined"}
+{"level":["info"],"timestamp":"26:02:2025|17:02:95","exception":false,"message":"MongoDB connected"}
+{"level":["info"],"timestamp":"26:02:2025|17:02:45","exception":false,"message":"MongoDB connected"}
+{"level":["info"],"timestamp":"26:02:2025|17:02:81","exception":false,"message":"MongoDB connected"}
+{"level":["info"],"timestamp":"26:02:2025|17:02:40","exception":false,"message":"MongoDB connected"}
+{"level":["warn"],"timestamp":"26:02:2025|17:02:66","exception":false,"message":"MongoDB Disconnecting"}
+{"level":["info"],"timestamp":"26:02:2025|17:02:26","exception":false,"message":"MongoDB connected"}
+{"level":["warn"],"timestamp":"26:02:2025|17:02:21","exception":false,"message":"MongoDB Disconnecting"}
+{"level":["info"],"timestamp":"26:02:2025|17:02:49","exception":false,"message":"MongoDB connected"}
+{"level":["warn"],"timestamp":"26:02:2025|17:02:52","exception":false,"message":"MongoDB Disconnecting"}
