@@ -19,7 +19,7 @@ app.use(cookieParser());
 app.use(cors());
 app.use(helmet());
 app.use(express.static(path.join(__dirname, "public")));
-app.use("/user", routes);
+app.use("/", routes);
 
 app.use(
   morgan("combined", {

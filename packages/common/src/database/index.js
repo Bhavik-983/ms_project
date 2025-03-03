@@ -5,8 +5,6 @@ import logger from "../utilities/logger.js";
 import config from "../config/index.js";
 import { shutDown } from "../utilities/serverUtils/shutDown.js";
 
-console.log(config.DATABASE.MONGO.URI);
-
 mongoose.connect(config.DATABASE.MONGO.URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -18,10 +16,9 @@ db.on("connecting", () => {
   logger.info({ message: "MongoDB Connecting" });
 });
 
-db.once("open", async() => {
+db.once("open", async () => {
   console.log("MONGO-DB DATABASE CONNECTED");
   logger.info({ message: "MongoDB connected" });
-
 });
 
 db.on("disconnecting", () => {
