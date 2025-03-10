@@ -46,6 +46,18 @@ importers:
         specifier: ^2.0.22
         version: 2.0.22
 
+  apps/notification-service:
+    dependencies:
+      '@myorg/common':
+        specifier: workspace:*
+        version: link:../../packages/common
+      amqplib:
+        specifier: ^0.10.3
+        version: 0.10.5
+      nodemon:
+        specifier: ^2.0.20
+        version: 2.0.22
+
   apps/post-service:
     dependencies:
       '@myorg/common':

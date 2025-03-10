@@ -12,7 +12,7 @@ import http from "http";
 import { shutDown } from "@myorg/common";
 // import config from "../config/index.js";
 // import { setIoObject } from "../socket/socket_server.js";
-// import { socketConnection } from "../socket/socket_client.js";s
+// import { socketConnection } from "../socket/socket_client.js";
 
 const debug = debugMessage("planetx-blockchain-dgt-backend:server");
 

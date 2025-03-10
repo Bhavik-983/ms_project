@@ -10,3 +10,4 @@ export {
   sendBadRequestWith407Code,
 } from "./response/index.js";
 export { shutDown } from "./serverUtils/shutDown.js";
+export * from "./rabbitmq.js";

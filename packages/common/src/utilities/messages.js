@@ -109,6 +109,12 @@ const messages = {
   imageDeletedSuccess: "Image deleted successfully",
   commentsGetSuccessfully: "Comments get successfully",
   commentDeletedSuccessfully: "Comment deleted successfully",
+
+  //notification
+  notificationNotFound: "Notification not found",
+  notificationDeleted: "Notification deleted successfully",
+  getNotificationsSuccessfully: "Notifications get successfully",
+  notificationCreated: "Notification created successfully",
 };
 
 export default messages;

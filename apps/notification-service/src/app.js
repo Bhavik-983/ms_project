@@ -1,10 +1,17 @@
 import createError from "http-errors";
 import express from "express";
 import path, { dirname } from "path";
-import {cookieParser,compression,cors,helmet,morgan,logger} from "@myorg/common";
+import {
+  cookieParser,
+  compression,
+  cors,
+  helmet,
+  morgan,
+  logger,
+} from "@myorg/common";
 import { fileURLToPath } from "url";
-
-import {db} from "@myorg/common";
+import router from "./routes/notification.js";
+import { db } from "@myorg/common";
 
 const app = express();
 
@@ -19,7 +26,7 @@ app.use(cookieParser());
 app.use(cors());
 app.use(helmet());
 app.use(express.static(path.join(__dirname, "public")));
-// app.use("/", routes);
+app.use("/", router);
 
 app.use(
   morgan("combined", {
@@ -46,6 +53,5 @@ app.use(function (err, req, res, next) {
   res.status(err.status || 500);
   res.render("error");
 });
-
 
 export default app;

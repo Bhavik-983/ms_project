@@ -1,5 +1,5 @@
 {
-  "name": "comment-service",
+  "name": "notification-service",
   "version": "1.0.0",
   "main": "index.js",
   "type": "module",
@@ -15,6 +15,7 @@
   "description": "",
   "dependencies": {
     "@myorg/common": "workspace:*",
+    "amqplib": "^0.10.3",
     "nodemon": "^2.0.20"
   }
 }

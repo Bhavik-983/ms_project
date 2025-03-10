@@ -87,10 +87,11 @@ export const requestSchema = Joi.object({
 }).unknown(true);
 
 export const followListSchema = Joi.object({
-  status: Joi.string().valid("ACCEPTED","REJECT").required().messages({
+  status: Joi.string().valid("ACCEPTED", "REJECT").required().messages({
     "string.empty": "Status is required.",
   }),
 }).unknown(true);
+
 //post_schema
 export const postCreateSchema = Joi.object({
   title: Joi.string().required().messages({
@@ -139,3 +140,10 @@ export const postImageSchema = Joi.object({
 }).unknown(true);
 
 // Optional: Add file validation if needed
+
+// Notification
+export const deleteNotificationSchema = Joi.object({
+  notificationId: objectId.required().messages({
+    "string.empty": "Notification id is required.",
+  }),
+}).unknown(true);

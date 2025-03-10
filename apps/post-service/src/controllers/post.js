@@ -8,6 +8,7 @@ import {
   PostModel,
   sendBadRequest,
   sendSuccess,
+  sendToQueue,
 } from "@myorg/common";
 
 export const createPost = async (req, res) => {
@@ -112,7 +113,7 @@ export const likeInPost = async (req, res, next) => {
     const post = await PostModel.findOne({ _id: req.params.postId });
     if (!post) return sendBadRequest(res, messages.postNotFound);
 
-    const like = await LikeModel.findOne({
+    let like = await LikeModel.findOne({
       fk_post_id: post._id,
       fk_user_id: req.user._id,
     });
@@ -127,7 +128,13 @@ export const likeInPost = async (req, res, next) => {
       like.is_like = like.is_like ? false : true;
       await like.save();
     }
-
+    sendToQueue("notification_queue", {
+      type: "like",
+      fk_sender_id: req.user._id,
+      fk_receiver_id: post.fk_user_id,
+      fk_post_id: post._id,
+      message: "liked your post",
+    });
     return sendSuccess(res, post, messages.likeInPostSuccessfully);
   } catch (e) {
     return sendBadRequest(res, errorHelper(e, "LIKE_POST"));

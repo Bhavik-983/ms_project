@@ -46,6 +46,7 @@ export default {
   SENDGRID_API_KEY: process.env.SENDGRID_API_KEY,
   SG_MAIL: process.env.SG_MAIL,
   IMAGE_PATH: process.env.IMAGE_PATH,
+  RABBITMQ_URL: process.env.RABBITMQ_URL,
 };
 
 export { cloudinary };

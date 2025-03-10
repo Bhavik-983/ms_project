@@ -5,8 +5,14 @@ const router = express.Router();
 dotenv.config();
 const authServiceProxy = httpProxy(process.env.AUTH_SERVICE_URL);
 const postServiceProxy = httpProxy(process.env.POST_SERVICE_URL);
+const notificationServiceProxy = httpProxy(
+  process.env.NOTIFICATION_SERVICE_URL
+);
 
 router.use("/user", (req, res, next) => authServiceProxy(req, res, next));
 router.use("/post", (req, res, next) => postServiceProxy(req, res, next));
+router.use("/notification", (req, res, next) =>
+  notificationServiceProxy(req, res, next)
+);
 
 export default router;

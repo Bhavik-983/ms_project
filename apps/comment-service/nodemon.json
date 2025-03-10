@@ -1,6 +1,0 @@
-{
-  "watch": ["src/", "../../packages/common/src/"],
-  "ext": "js,json",
-  "ignore": ["node_modules/"],
-  "exec": "node src/bin/www.js"
-}

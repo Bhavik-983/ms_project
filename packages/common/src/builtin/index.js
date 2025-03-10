@@ -7,3 +7,4 @@ export { default as mongoose } from "mongoose";
 export { default as cookieParser } from "cookie-parser";
 export { default as bcrypt } from "bcrypt";
 export { default as crypto } from "crypto";
+export { default as amqplib } from "amqplib";
