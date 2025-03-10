@@ -1,9 +1,16 @@
 import createError from "http-errors";
 import express from "express";
 import path, { dirname } from "path";
-import {cookieParser,compression,cors,helmet,morgan,logger} from "@myorg/common";
+import {
+  cookieParser,
+  compression,
+  cors,
+  helmet,
+  morgan,
+  logger,
+} from "@myorg/common";
 import { fileURLToPath } from "url";
-import {db} from "@myorg/common";
+import { db } from "@myorg/common";
 import routes from "./routes/auth.js";
 
 const app = express();
@@ -20,7 +27,6 @@ app.use(cors());
 app.use(helmet());
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/", routes);
-
 app.use(
   morgan("combined", {
     stream: logger.stream,
@@ -46,6 +52,5 @@ app.use(function (err, req, res, next) {
   res.status(err.status || 500);
   res.render("error");
 });
-
 
 export default app;

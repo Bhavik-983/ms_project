@@ -80,6 +80,13 @@ const messages = {
   passwordNotExists: "Password not found",
   selectDifferentPassword: "Old and new password must be different",
   linkSendSuccessfully: "Link send successfully",
+  profileUpdateSuccessfully: "Profile update successfully",
+  followUserSuccessfully: "You're now following this account.",
+  youCanNotSelfFollow: "You cannot follow yourself.",
+  unfollowSuccessfully: "You’ve unfollowed this account.",
+  requestAccepted: "Request accepted successfully",
+  requestRejected: "Request rejected successfully",
+  listGetSuccessfully: "User follow list retrieved successfully",
   //token
   invalidToken: "Invalid token",
   authTokenRequired: "Auth token required",
@@ -89,7 +96,19 @@ const messages = {
   tokenNotExist: "Token not found",
   tokenVerifySuccessfully: "Token verified successfully",
 
-  // router validations
+  //post
+  postCreated: "Post created successfully",
+  listOfPublicPosts: "Posts get successfully",
+  postGetSuccessfully: "Posts get successfully",
+  postNotFound: "Post not found",
+  postUpdatedSuccessfully: "Posts updated successfully",
+  postDeletedSuccessfully: "Posts deleted successfully",
+  likeInPostSuccessfully: "Like in post successfully",
+  commentSuccess: "Comments add successfully",
+  postDeletedSuccess: "Post deleted successfully",
+  imageDeletedSuccess: "Image deleted successfully",
+  commentsGetSuccessfully: "Comments get successfully",
+  commentDeletedSuccessfully: "Comment deleted successfully",
 };
 
 export default messages;

@@ -1,4 +1,4 @@
-import database from "../../database/index.js";
+import database from "../../database/connection.js";
 import sleep from "../sleep.js";
 
 export async function shutDown(server,onError = false) {

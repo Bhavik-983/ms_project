@@ -12,7 +12,7 @@ import http from "http";
 import { shutDown } from "@myorg/common";
 // import config from "../config/index.js";
 // import { setIoObject } from "../socket/socket_server.js";
-// import { socketConnection } from "../socket/socket_client.js";
+// import { socketConnection } from "../socket/socket_client.js";s
 
 const debug = debugMessage("planetx-blockchain-dgt-backend:server");
 
@@ -20,7 +20,7 @@ const debug = debugMessage("planetx-blockchain-dgt-backend:server");
  * Get port from environment and store in Express.
  */
 
-const port = normalizePort(process.env.PORT || "3002");
+const port = normalizePort(process.env.PORT || "3003");
 app.set("port", port);
 
 /**
@@ -110,12 +110,12 @@ function onListening() {
 
 process.on("SIGTERM", () => {
   // console.log('SIGTERM')
-  shutDown(server,false);
+  shutDown(server, false);
 });
 
 process.on("SIGINT", () => {
   // console.log('SIGINT')
-  shutDown(server,false);
+  shutDown(server, false);
 });
 
 export default server;

@@ -110,12 +110,12 @@ function onListening() {
 
 process.on("SIGTERM", () => {
   // console.log('SIGTERM')
-  shutDown(server,false);
+  shutDown(server, false);
 });
 
 process.on("SIGINT", () => {
   // console.log('SIGINT')
-  shutDown(server,false);
+  shutDown(server, false);
 });
 
 export default server;

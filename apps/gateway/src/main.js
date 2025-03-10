@@ -5,7 +5,7 @@ import routes from './gateway-route.js';
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8001;
 
 app.use('/', routes);
 

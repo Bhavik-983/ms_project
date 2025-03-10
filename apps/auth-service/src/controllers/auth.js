@@ -1,4 +1,3 @@
-import { UserModel } from "../models/auth.js";
 import {
   sendBadRequest,
   sendSuccess,
@@ -13,6 +12,10 @@ import {
   sendBadRequestWith401Code,
   sendTextMail,
   sendBadRequestWith406Code,
+  cloudinary,
+  deleteFromCloudinary,
+  UserModel,
+  FollowerModel,
 } from "@myorg/common";
 
 export const registration = async (req, res) => {
@@ -62,10 +65,14 @@ export const login = async (req, res) => {
     user.access_token_id = accessTokenId;
     user.refresh_token_id = refreshTokenId;
     await user.save();
-    return sendSuccess(res, messages.loginSuccess, {
-      accessToken,
-      refreshToken,
-    });
+    return sendSuccess(
+      res,
+      {
+        accessToken,
+        refreshToken,
+      },
+      messages.loginSuccess
+    );
   } catch (e) {
     return sendBadRequest(res, errorHelper(e, "LOGIN"));
   }
@@ -138,7 +145,13 @@ export const setPassword = async (req, res) => {
     }
 
     user.name = data.name;
-    // if (req.file) user.profile_image = config.IMAGE_PATH + req.file.filename;
+    if (req.file) {
+      const result = await cloudinary.uploader.upload(req.file.path, {
+        folder: `myapp_images/user_profile/${user._id.toString().slice(-5)}`, // Optional folder in Cloudinary
+      });
+      user.profile_image.url = result.secure_url;
+      user.profile_image.public_id = result.public_id;
+    }
     user.password = await bcrypt.hashSync(data?.password, 10);
     user.set_password_token = undefined;
     user.set_password_token_exp_time = undefined;
@@ -226,5 +239,146 @@ export const verifyToken = async (req, res) => {
     return sendSuccess(res, messages.tokenVerifySuccessfully);
   } catch (e) {
     return sendBadRequest(res, errorHelper(e, "TOKEN_VERIFY"));
+  }
+};
+
+export const updateProfile = async (req, res) => {
+  try {
+    const data = req?.body;
+    const user = await UserModel.findOne({ _id: req?.user?._id });
+    if (!user) return sendBadRequest(res, messages?.userNotFound);
+
+    user.name = data?.name;
+    if (req.file) {
+      if (req.user.profile_image.public_id)
+        await deleteFromCloudinary(req.user.profile_image.public_id);
+      const result = await cloudinary.uploader.upload(req.file.path, {
+        folder: `myapp_images/user_profile/${user._id.toString().slice(-5)}`, // Optional folder in Cloudinary
+      });
+      user.profile_image.url = result.secure_url;
+      user.profile_image.public_id = result.public_id;
+    }
+
+    await user.save();
+    return sendSuccess(res, messages.profileUpdateSuccessfully);
+  } catch (e) {
+    return sendBadRequest(res, errorHelper(e, "UPDATE_PROFILE"));
+  }
+};
+
+export const followUser = async (req, res) => {
+  try {
+    const user = await UserModel.findOne({ _id: req.params.userId });
+    if (!user) return sendBadRequest(res, messages.userNotFound);
+
+    if (req.user._id.equals(req.params.userId))
+      return sendBadRequest(res, messages.youCanNotSelfFollow);
+
+    const follower = await FollowerModel.findOne({
+      fk_user_id: req.params.userId,
+      fk_followers_id: req.user._id,
+    });
+    if (!follower) {
+      await new FollowerModel({
+        fk_user_id: req.params.userId,
+        fk_followers_id: req.user._id,
+        status: "REQUESTED",
+      }).save();
+    }
+    return sendSuccess(res, messages.followUserSuccessfully);
+  } catch (e) {
+    return sendBadRequest(res, errorHelper(e, "FOLLOW_USER"));
+  }
+};
+
+export const unFollowUser = async (req, res) => {
+  try {
+    const user = await UserModel.findOne({ _id: req.params.userId });
+    if (!user) return sendBadRequest(res, messages.userNotFound);
+
+    // await FollowerModel.deleteOne({
+    //   user: req.user._id,
+    //   following: req.params.userId,
+    // });
+    await FollowerModel.deleteOne({
+      fk_user_id: req.params.userId,
+      fk_followers_id: req.user._id,
+      status: "ACCEPTED",
+    });
+
+    return sendSuccess(res, messages.unfollowSuccessfully);
+  } catch (e) {
+    return sendBadRequest(res, errorHelper(e, "UNFOLLOW_USER"));
+  }
+};
+
+export const acceptOrRejectFollowers = async (req, res) => {
+  try {
+    const data = req.body;
+    const user = await UserModel.findOne({ _id: req.params.userId });
+    if (!user) return sendBadRequest(res, messages.userNotFound);
+
+    const request = await FollowerModel.findOne({
+      fk_user_id: req.user._id,
+      fk_followers_id: req.params.userId,
+      status: "REQUESTED",
+    });
+
+    if (request) {
+      if (data.status === "ACCEPTED") {
+        await FollowerModel.updateOne(
+          { fk_user_id: req.user._id, fk_followers_id: req.params.userId },
+          { $set: { status: "ACCEPTED" } }
+        );
+        // await FollowerModel.updateOne(
+        //   { user: req.params.userId, following: req.user._id }, // filter by current user
+        //   { $set: { following: req.user._id } }, // add to array if not present
+        //   { upsert: true } // create if it doesn't exist
+        // );
+      } else {
+        await FollowerModel.deleteOne({
+          fk_user_id: req.user._id,
+          fk_followers_id: req.params.userId,
+          status: "REQUESTED",
+        });
+      }
+    }
+    return sendSuccess(
+      res,
+      data.status === "ACCEPTED"
+        ? messages.requestAccepted
+        : messages.requestRejected
+    );
+  } catch (e) {
+    return sendBadRequest(res, errorHelper(e, "UPDATE_FOLLOW_REQUEST"));
+  }
+};
+
+export const userFollowList = async (req, res) => {
+  try {
+    const data = req.query;
+    let userData;
+    if (data.type === "REQUESTED") {
+      userData = await FollowerModel.find({
+        fk_followers_id: req.user._id,
+        status: "REQUESTED",
+      });
+    }
+
+    if (data.type === "ACCEPTED") {
+      userData = await FollowerModel.find({
+        fk_user_id: req.user._id,
+        status: "ACCEPTED",
+      });
+    }
+
+    if (data.type === "FOLLOWING") {
+      userData = await FollowerModel.find({
+        fk_followers_id: req.user._id,
+      });
+    }
+    return sendSuccess(res, userData, messages.listGetSuccessfully);
+  } catch (e) {
+    return sendBadRequest(res, errorHelper(e, "USER_FOLLOW_LIST"));
   }
 };
