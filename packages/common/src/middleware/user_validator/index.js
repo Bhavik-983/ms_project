@@ -7,6 +7,7 @@ import messages from "../../utilities/messages.js";
 import config from "../../config/index.js";
 import logger from "../../utilities/logger.js";
 import { UserModel } from "../../database/index.js";
+import { validateAccessToken } from "../../helper/accessTokenHelper.js";
 // import jwt from jwt
 
 export const isUser = async (req, res, next) => {
@@ -55,5 +56,48 @@ export const isUser = async (req, res, next) => {
     }
     logger.error(e);
     return sendBadRequest(res, messages.somethingGoneWrong);
+  }
+};
+
+export const isValidUser = async (socket, next) => {
+  try {
+    if (socket.handshake.auth.authorization) {
+      if (!(socket.handshake.auth && socket.handshake.auth.authorization))
+        return next(new Error("Authentication error")); // Auth token required
+      let tokenInfo;
+      const tokenInformation = await validateAccessToken(
+        socket.handshake.auth.authorization
+      );
+      if (tokenInformation) tokenInfo = tokenInformation;
+      if (!(tokenInfo && tokenInfo._id))
+        return next(new Error(messages.tokenFormatInvalid)); // Validate token
+      socket.userId = tokenInfo._id;
+      next();
+    }
+    if (socket.handshake.headers.authorization) {
+      if (!(socket.handshake.headers && socket.handshake.headers.authorization))
+        return next(new Error("Authentication error")); // Auth token required
+
+      let tokenInfo;
+      const tokenInformation = await validateAccessToken(
+        socket.handshake.headers.authorization
+      );
+      if (tokenInformation) tokenInfo = tokenInformation;
+      if (!(tokenInfo && tokenInfo._id))
+        return next(new Error(messages.tokenFormatInvalid)); // Validate token
+      socket.userId = tokenInfo._id;
+      next();
+    }
+  } catch (e) {
+    if (String(e).includes("jwt expired")) {
+      return next(new Error(messages.tokenExpiredError));
+    } else if (String(e).includes("invalid token")) {
+      return next(new Error(messages.invalidToken));
+    } else if (String(e).includes("jwt malformed")) {
+      return next(new Error(messages.invalidToken));
+    }
+    logger.error("IS_ADMINISTER_FOR_SOCKET");
+    logger.error(e);
+    next(new Error("Authentication error"));
   }
 };

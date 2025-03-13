@@ -11,3 +11,4 @@ export {
 } from "./response/index.js";
 export { shutDown } from "./serverUtils/shutDown.js";
 export * from "./rabbitmq.js";
+export { imageUploader, deleteFromCloudinary } from "./upload.js";

@@ -5,3 +5,5 @@ export * from "./models/follower.js";
 export * from "./models/like.js";
 export * from "./models/comment.js";
 export * from "./models/notification.js";
+export * from "./models/story.js";
+export * from "./models/chat.js";

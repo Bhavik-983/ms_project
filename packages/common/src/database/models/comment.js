@@ -10,6 +10,10 @@ const commentSchema = await mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "user",
     },
+    fk_parent_comment_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "comment", // Reference to your Comment model
+    },
     text: {
       type: String,
     },

@@ -5,3 +5,4 @@ export * from "./errorSchema.js";
 export * from "./sendGridHelper.js";
 export * from "./sendGridHelper.js";
 export * from "./multerHelper.js";
+export * from "./socketHelper.js";

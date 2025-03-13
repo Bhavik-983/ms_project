@@ -1,7 +1,8 @@
 import multer from "multer";
 import logger from "../utilities/logger.js";
 import { v4 as uuidv4 } from "uuid";
-
+import { CloudinaryStorage } from "multer-storage-cloudinary";
+import { cloudinary } from "../config/index.js";
 // const deckDownloadStorage = multer.diskStorage({
 //   destination: function (req, file, cb) {
 //     cb(null, "./public/file");
@@ -20,3 +21,22 @@ const storage = multer.diskStorage({
 export const upload = multer({
   storage,
 });
+
+// const cloudinaryStorage = new CloudinaryStorage({
+//   cloudinary: cloudinary,
+//   params: {
+//     folder: (req) =>
+//       `instaclone/stories/${req.user._id.toString().slice(-5)}`,
+//     resource_type: "auto",
+//   },
+// });
+
+const cloudinaryStorage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: (req) => `instaclone/chat/${req.user._id.toString().slice(-5)}`,
+    resource_type: "auto",
+  },
+});
+
+export const cloudinaryUpload = multer({ storage: cloudinaryStorage });

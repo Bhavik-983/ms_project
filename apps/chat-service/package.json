@@ -1,0 +1,20 @@
+{
+  "name": "chat-service",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon src/bin/www.js",
+    "build": "mkdir -p dist && cp -r src/* dist/",
+    "start": "node dist/app.js",
+    "lint": "eslint ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@myorg/common": "workspace:*",
+    "nodemon": "^2.0.20"
+  }
+}

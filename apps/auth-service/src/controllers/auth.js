@@ -16,7 +16,15 @@ import {
   deleteFromCloudinary,
   UserModel,
   FollowerModel,
+  imageUploader,
 } from "@myorg/common";
+
+// {
+//   "watch": ["src/", "../../packages/common/src/"],
+//   "ext": "js,json",
+//   "ignore": ["node_modules/"],
+//   "exec": "node src/bin/www.js"
+// }
 
 export const registration = async (req, res) => {
   try {
@@ -146,9 +154,10 @@ export const setPassword = async (req, res) => {
 
     user.name = data.name;
     if (req.file) {
-      const result = await cloudinary.uploader.upload(req.file.path, {
-        folder: `myapp_images/user_profile/${user._id.toString().slice(-5)}`, // Optional folder in Cloudinary
-      });
+      const result = await imageUploader(
+        req.file.path,
+        "user_profile/" + user._id.toString().slice(-5)
+      );
       user.profile_image.url = result.secure_url;
       user.profile_image.public_id = result.public_id;
     }
@@ -253,7 +262,7 @@ export const updateProfile = async (req, res) => {
       if (req.user.profile_image.public_id)
         await deleteFromCloudinary(req.user.profile_image.public_id);
       const result = await cloudinary.uploader.upload(req.file.path, {
-        folder: `myapp_images/user_profile/${user._id.toString().slice(-5)}`, // Optional folder in Cloudinary
+        folder: `instaclone/user_profile/${user._id.toString().slice(-5)}`, // Optional folder in Cloudinary
       });
       user.profile_image.url = result.secure_url;
       user.profile_image.public_id = result.public_id;

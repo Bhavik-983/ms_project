@@ -3,6 +3,7 @@ import {
   CommentModel,
   deleteFromCloudinary,
   errorHelper,
+  imageUploader,
   LikeModel,
   messages,
   PostModel,
@@ -21,18 +22,18 @@ export const createPost = async (req, res) => {
       description: data.description,
       tags: data.tags,
       visibility: data.visibility,
-    }).save();
+    });
 
     const uploadedImages = [];
     if (req?.files) {
       if (req.files.image.length > 0) {
         for (const file of req.files.image) {
-          const result = await cloudinary.uploader.upload(file.path, {
-            folder: `myapp_images/post_images/${
+          const result = await imageUploader(
+            file.path,
+            "post_images/" +
               req.user._id.toString().slice(-5) +
               newPost._id.toString().slice(-5)
-            }`,
-          });
+          );
           uploadedImages.push({
             url: result.secure_url,
             public_id: result.public_id,
@@ -88,7 +89,7 @@ export const updatePostById = async (req, res, next) => {
       if (req.files.image.length > 0) {
         for (const file of req.files.image) {
           const result = await cloudinary.uploader.upload(file.path, {
-            folder: `myapp_images/post_images/${
+            folder: `instaclone/post_images/${
               req.user._id.toString().slice(-5) + post._id.toString().slice(-5)
             }`,
           });
@@ -129,7 +130,7 @@ export const likeInPost = async (req, res, next) => {
       await like.save();
     }
     sendToQueue("notification_queue", {
-      type: "like",
+      type: "LIKE",
       fk_sender_id: req.user._id,
       fk_receiver_id: post.fk_user_id,
       fk_post_id: post._id,
@@ -151,6 +152,13 @@ export const commentOnPost = async (req, res, next) => {
       fk_user_id: req.user._id,
       text: req.body.content,
     }).save();
+    sendToQueue("notification_queue", {
+      type: "COMMENT",
+      fk_sender_id: req.user._id,
+      fk_receiver_id: post.fk_user_id,
+      fk_post_id: post._id,
+      message: "comment on your post",
+    });
     return sendSuccess(res, post, messages.commentSuccess);
   } catch (e) {
     return sendBadRequest(res, errorHelper(e, "COMMENT_ON_POST"));
@@ -166,6 +174,43 @@ export const getComments = async (req, res, next) => {
     return sendSuccess(res, comments, messages.commentsGetSuccessfully);
   } catch (e) {
     return sendBadRequest(res, errorHelper(e, "GET_COMMENTS"));
+  }
+};
+
+export const commentReply = async (req, res, next) => {
+  try {
+    const comment = await CommentModel.findOne({
+      _id: req.params.commentId,
+      fk_user_id: { $ne: req.user._id },
+    });
+    if (!comment) return sendBadRequest(res, messages.commentNotFound);
+
+    await new CommentModel({
+      fk_parent_comment_id: req.params.commentId,
+      fk_user_id: req.user._id,
+      text: req.body.content,
+    }).save();
+    sendToQueue("notification_queue", {
+      type: "COMMENT_REPLAY",
+      fk_sender_id: req.user._id,
+      fk_receiver_id: comment.fk_user_id,
+      fk_post_id: post._id,
+      message: "replied to your comment",
+    });
+    return sendSuccess(res, post, messages.commentSuccess);
+  } catch (e) {
+    return sendBadRequest(res, errorHelper(e, "COMMENT_ON_POST"));
+  }
+};
+
+export const listOfCommentReplay = async (req, res) => {
+  try {
+    const comments = await CommentModel.find({
+      fk_parent_comment_id: req.params.commentId,
+    });
+    return sendSuccess(res, comments, messages.listOfCommentReplay);
+  } catch (e) {
+    return sendBadRequest(res, errorHelper(e, "LIST_OF_COMMENT_REPLAY"));
   }
 };
 
@@ -191,7 +236,7 @@ export const deletePostById = async (req, res, next) => {
     if (!post) return sendBadRequest(res, messages.postNotFound);
 
     await deleteFromCloudinary(
-      `myapp_images/post_images/${
+      `instaclone/post_images/${
         req.user._id.toString().slice(-5) + post._id.toString().slice(-5)
       }/`
     );

@@ -11,9 +11,9 @@ export const tokenId = () => {
   return crypto.randomBytes(16).toString("hex");
 };
 
-export const validateAccessToken = async (token, role) => {
+export const validateAccessToken = async (token) => {
   try {
-    const tokenInfo = await jwt.verify(token, config[`${role}_SECRET`]);
+    const tokenInfo = await jwt.verify(token, config.USER_SECRET);
     return tokenInfo;
   } catch (e) {
     return null;

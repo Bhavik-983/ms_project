@@ -45,8 +45,9 @@ export default {
   USER_REFRESH_SECRET: process.env.USER_REFRESH_SECRET,
   SENDGRID_API_KEY: process.env.SENDGRID_API_KEY,
   SG_MAIL: process.env.SG_MAIL,
-  IMAGE_PATH: process.env.IMAGE_PATH,
   RABBITMQ_URL: process.env.RABBITMQ_URL,
+  MEDIA_ROOT: process.env.MEDIA_ROOT,
+  CRON_JOB: process.env.CRON_JOB,
 };
 
 export { cloudinary };

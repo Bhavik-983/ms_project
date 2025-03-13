@@ -11,6 +11,7 @@ import {
 } from "@myorg/common";
 import {
   commentOnPost,
+  commentReply,
   createPost,
   deleteFileOfPost,
   deletePostById,
@@ -46,19 +47,21 @@ router.put(
   updatePostById
 );
 
-router.patch(
+router.post(
   "/like/:postId",
   validateSchema({ params: postIdSchema }),
   isUser,
   likeInPost
 );
 
-router.patch(
+router.post(
   "/comment/:postId",
   validateSchema({ params: postIdSchema, body: commentSchema }),
   isUser,
   commentOnPost
 );
+
+router.post("/replay/:commentId", isUser, commentReply);
 
 router.delete(
   "/:postId",

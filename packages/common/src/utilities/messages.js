@@ -109,12 +109,33 @@ const messages = {
   imageDeletedSuccess: "Image deleted successfully",
   commentsGetSuccessfully: "Comments get successfully",
   commentDeletedSuccessfully: "Comment deleted successfully",
+  commentNotFound: "Comment not found",
+  listOfCommentReplay: "List of comments replay",
 
   //notification
   notificationNotFound: "Notification not found",
   notificationDeleted: "Notification deleted successfully",
   getNotificationsSuccessfully: "Notifications get successfully",
   notificationCreated: "Notification created successfully",
+
+  //story
+  storyCreated: "Story created successfully",
+  storyNotFound: "Story not found",
+  storyGetSuccess: "Story get successfully",
+  storyUpdated: "Story updated successfully",
+  storyDeleted: "Story deleted successfully",
+
+  //chat
+  chatNotFound: "Chat not found",
+  chatCreated: "Chat created successfully",
+  chatGetSuccessfully: "Chat get successfully",
+  chatUpdated: "Chat updated successfully",
+  messageNotFound: "Message not found",
+  messageDeleted: "Message deleted successfully",
+  messageCreated: "Message created successfully",
+  messagesGetSuccessfully: "Messages get successfully",
+  messageUpdated: "Message updated successfully",
+  countGetSuccess: "Counts get successfully",
 };
 
 export default messages;
