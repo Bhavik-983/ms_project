@@ -9,6 +9,8 @@ import {
 
 async function createNotification(data) {
   try {
+    console.log(data, "notification data");
+
     await new NotificationModel(data).save();
   } catch (e) {
     console.error("Error creating notification", e);

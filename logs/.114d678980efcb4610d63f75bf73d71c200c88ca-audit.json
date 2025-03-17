@@ -6,11 +6,6 @@
     "auditLog": "/Users/sahilpatoliya/Documents/Insta_Clone/logs/.114d678980efcb4610d63f75bf73d71c200c88ca-audit.json",
     "files": [
         {
-            "date": 1740714275557,
-            "name": "/Users/sahilpatoliya/Documents/Insta_Clone/logs/app-2025-02-28.log",
-            "hash": "51fc7d1551ae3345b3da3c018f175def5dd33ceb9c33080a60ace48a656c7828"
-        },
-        {
             "date": 1740977539693,
             "name": "/Users/sahilpatoliya/Documents/Insta_Clone/logs/app-2025-03-03.log",
             "hash": "c6e196c560e9f7dddfe9268c5081d62a8cc480b879cbbe5e480e52be6b1251e7"
@@ -54,6 +49,11 @@
             "date": 1741837831441,
             "name": "/Users/sahilpatoliya/Documents/Insta_Clone/logs/app-2025-03-13.log",
             "hash": "cb23fae2697de7c2b8ec716bc4b35db57a298978c880552c8e6e8f0c798bcc59"
+        },
+        {
+            "date": 1742182551895,
+            "name": "/Users/sahilpatoliya/Documents/Insta_Clone/logs/app-2025-03-17.log",
+            "hash": "f2d3708eaf7fddccbcd1de95378ba13bb331c730efdc6ad954d8242ee81ce2da"
         }
     ],
     "hashType": "sha256"

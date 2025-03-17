@@ -20,7 +20,7 @@ export const connectRabbitMQ = async () => {
     });
     channel = await connection.createChannel();
 
-    console.log("RabbitMQ Connected!");
+    // console.log("RabbitMQ Connected!");
 
     return channel;
   } catch (err) {
@@ -30,6 +30,8 @@ export const connectRabbitMQ = async () => {
 };
 
 export const sendToQueue = async (queue, message) => {
+  console.log(queue, message, "datadsygfasguygasfuyagst");
+
   const ch = await connectRabbitMQ();
   await ch.assertQueue(queue, { durable: true });
   ch.sendToQueue(queue, Buffer.from(JSON.stringify(message)));

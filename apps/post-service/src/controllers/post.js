@@ -129,6 +129,7 @@ export const likeInPost = async (req, res, next) => {
       like.is_like = like.is_like ? false : true;
       await like.save();
     }
+
     sendToQueue("notification_queue", {
       type: "LIKE",
       fk_sender_id: req.user._id,
