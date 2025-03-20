@@ -11,3 +11,5 @@ export { default as amqplib } from "amqplib";
 export { default as bodyParser } from "body-parser";
 export { default as cron } from "node-cron";
 export { Server } from "socket.io";
+export { default as swaggerJsDoc } from "swagger-jsdoc";
+export { default as swaggerUi } from "swagger-ui-express";

@@ -8,6 +8,8 @@ import {
   helmet,
   morgan,
   logger,
+  swaggerJsDoc,
+  swaggerUi,
 } from "@myorg/common";
 import { fileURLToPath } from "url";
 import { db } from "@myorg/common";
@@ -23,7 +25,12 @@ app.use(express.urlencoded({ extended: false }));
 // app.use(rateLimiter);
 app.use(compression());
 app.use(cookieParser());
-app.use(cors());
+// app.use(
+//   cors({
+//     origin: "http://localhost:5173", // Set to the exact frontend origin
+//     credentials: true, // Allow credentials
+//   })
+// );
 app.use(helmet());
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/", routes);

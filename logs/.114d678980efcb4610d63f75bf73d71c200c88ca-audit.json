@@ -6,21 +6,6 @@
     "auditLog": "/Users/sahilpatoliya/Documents/Insta_Clone/logs/.114d678980efcb4610d63f75bf73d71c200c88ca-audit.json",
     "files": [
         {
-            "date": 1740977539693,
-            "name": "/Users/sahilpatoliya/Documents/Insta_Clone/logs/app-2025-03-03.log",
-            "hash": "c6e196c560e9f7dddfe9268c5081d62a8cc480b879cbbe5e480e52be6b1251e7"
-        },
-        {
-            "date": 1741059959166,
-            "name": "/Users/sahilpatoliya/Documents/Insta_Clone/logs/app-2025-03-04.log",
-            "hash": "8da088a0b6179d1159c782ba6d324d1f41f3673ffa4c2a7ff3c25eaa017b918b"
-        },
-        {
-            "date": 1741145757117,
-            "name": "/Users/sahilpatoliya/Documents/Insta_Clone/logs/app-2025-03-05.log",
-            "hash": "204a3518aefc078d975f4df0cceddb78ca2617f61a72a6b332072c0adc503666"
-        },
-        {
             "date": 1741244351203,
             "name": "/Users/sahilpatoliya/Documents/Insta_Clone/logs/app-2025-03-06.log",
             "hash": "f9f3e7249fc55f6210a3931dee9770f82122b19ef5269aa11cbb96d602583f61"
@@ -54,6 +39,31 @@
             "date": 1742182551895,
             "name": "/Users/sahilpatoliya/Documents/Insta_Clone/logs/app-2025-03-17.log",
             "hash": "f2d3708eaf7fddccbcd1de95378ba13bb331c730efdc6ad954d8242ee81ce2da"
+        },
+        {
+            "date": 1742279595977,
+            "name": "/Users/sahilpatoliya/Documents/Insta_Clone/logs/app-2025-03-18.log",
+            "hash": "8de0c8e32bb25dbd19d577fc25cefa1897f1db659a525701840f76edee342fcb"
+        },
+        {
+            "date": 1742364357809,
+            "name": "/Users/sahilpatoliya/Documents/Insta_Clone/logs/app-2025-03-19.log",
+            "hash": "bb3d98cf84a20a8ab0728b65080fc07407f61fda12e5f8085d7a4820db53cf60"
+        },
+        {
+            "date": 1742368643005,
+            "name": "/Users/sahilpatoliya/Documents/Insta_Clone/logs/app-2025-03-19.log.1",
+            "hash": "58a2cebd786cca03dc696dc820a4bdaf8af39d1351856a4b95923195fa9e4f40"
+        },
+        {
+            "date": 1742368660404,
+            "name": "/Users/sahilpatoliya/Documents/Insta_Clone/logs/app-2025-03-19.log.2",
+            "hash": "37cdcac6fd552f4484306c5dc357b00bfd5abfdfe7613c66bf11cc261866355d"
+        },
+        {
+            "date": 1742441905496,
+            "name": "/Users/sahilpatoliya/Documents/Insta_Clone/logs/app-2025-03-20.log",
+            "hash": "f3e295cfa85e27db70d34503e08c490f086f92f3c2cb3408ae038f76e31f01b4"
         }
     ],
     "hashType": "sha256"
