@@ -13,3 +13,4 @@ export { default as cron } from "node-cron";
 export { Server } from "socket.io";
 export { default as swaggerJsDoc } from "swagger-jsdoc";
 export { default as swaggerUi } from "swagger-ui-express";
+export { default as axios } from "axios";

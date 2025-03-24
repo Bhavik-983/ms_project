@@ -5,6 +5,7 @@ import {
   forgotPasswordSchema,
   isUser,
   loginSchema,
+  redirectGoogleAuthConsent,
   requestSchema,
   signupSchema,
   tokenSchema,
@@ -19,6 +20,7 @@ import {
   followUser,
   forgotPassword,
   generateNewAccessAndRefreshToken,
+  googleAuth,
   login,
   registration,
   setPassword,
@@ -30,10 +32,15 @@ import {
 
 const router = express.Router();
 
-router.post(
-  "/registration",
-  validateSchema({ body: signupSchema }),
-  registration
+// app.get("/signup/redirect", googleAuth);
+-(
+  // app.get("/auth", redirectGoogleAuthConsent);
+
+  router.post(
+    "/registration",
+    validateSchema({ body: signupSchema }),
+    registration
+  )
 );
 
 router.post("/login", validateSchema({ body: loginSchema }), login);

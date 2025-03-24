@@ -2,10 +2,10 @@ import { useState } from 'react';
 import { useMutation } from 'react-query';
 import { signupApi } from '../../api/auth';
 import { Button, TextField, Box, Typography } from '@mui/material';
-
+import { useNavigate } from 'react-router-dom';
+import { OAuthButton } from '@web/common';
 const Signup = () => {
   const [formData, setFormData] = useState({ name: '', email: '', password: '' });
-
   const mutation = useMutation(signupApi, {
     onSuccess: () => {
       alert('Signup successful');
@@ -34,6 +34,7 @@ const Signup = () => {
         <Button type="submit" fullWidth variant="contained" color="primary" sx={{ mt: 2 }}>
           {mutation.isLoading ? 'Signing up...' : 'Signup'}
         </Button>
+        <OAuthButton />
       </form>
     </Box>
   );

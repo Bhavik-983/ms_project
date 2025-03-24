@@ -48,6 +48,9 @@ export default {
   RABBITMQ_URL: process.env.RABBITMQ_URL,
   MEDIA_ROOT: process.env.MEDIA_ROOT,
   CRON_JOB: process.env.CRON_JOB,
+  CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
+  CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
+  REDIRECT_URI: process.env.GOOGLE_REDIRECT_URI,
 };
 
 export { cloudinary };

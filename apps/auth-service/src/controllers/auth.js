@@ -17,6 +17,7 @@ import {
   UserModel,
   FollowerModel,
   imageUploader,
+  axios,
 } from "@myorg/common";
 
 // {
@@ -26,6 +27,48 @@ import {
 //   "exec": "node src/bin/www.js"
 // }
 
+export const googleAuth = async (req, res) => {
+  try {
+    const tokenResponse = await axios.post(
+      "https://oauth2.googleapis.com/token",
+      {
+        code,
+        client_id: config.CLIENT_ID,
+        client_secret: config.CLIENT_SECRET,
+        redirect_uri: config.REDIRECT_URI,
+        grant_type: "authorization_code",
+      }
+    );
+
+    const { access_token, id_token } = tokenResponse.data;
+
+    // Step 3: Fetch user details from Google
+    const userInfoResponse = await axios.get(
+      "https://www.googleapis.com/oauth2/v3/userinfo",
+      {
+        headers: { Authorization: `Bearer ${access_token}` },
+      }
+    );
+
+    const user = userInfoResponse.data;
+    console.log(user);
+    return sendSuccess(res, messages.registrationSuccess);
+
+    // let user = await UserModel.findOne({ email: data.email });
+
+    // if (!user) {
+    //   user = new UserModel({
+    //     name: data.name,
+    //     email: data.email,
+    //     profile_image: data.picture,
+    //   });
+    //   await user.save();
+    // }
+  } catch (e) {
+    return sendBadRequest(res, errorHelper(res, "GOOGLE_AUTHENTICATION"));
+  }
+};
+
 export const registration = async (req, res) => {
   try {
     const data = req.body;
@@ -33,7 +76,7 @@ export const registration = async (req, res) => {
     const isEmail = await UserModel.findOne({ email: data.email });
     if (isEmail) return sendBadRequest(res, messages.emailAlreadyExists);
 
-    await new UserModel({
+    const newUser = await new UserModel({
       ...data,
       set_password_token: crypto.randomBytes(30).toString("hex"),
       set_password_token_exp_time: new Date(
@@ -41,6 +84,12 @@ export const registration = async (req, res) => {
       ),
       isNewUser: true,
     }).save();
+    await sendTextMail(
+      [data?.email],
+      config.SG_MAIL,
+      "Set password",
+      `url:http://localhost:5173/set/password/${newUser.set_password_token}`
+    );
 
     return sendSuccess(res, messages.registrationSuccess);
   } catch (e) {
@@ -126,6 +175,8 @@ export const generateNewAccessAndRefreshToken = async (req, res) => {
 export const setPassword = async (req, res) => {
   try {
     const data = req?.body;
+
+    console.log("tokkkenenne", data);
 
     const user = await UserModel.findOne({ set_password_token: data?.token });
     if (!user) return sendBadRequest(res, messages?.tokenNotExist);

@@ -8,6 +8,7 @@ import config from "../../config/index.js";
 import logger from "../../utilities/logger.js";
 import { UserModel } from "../../database/index.js";
 import { validateAccessToken } from "../../helper/accessTokenHelper.js";
+import { errorHelper } from "../../../dist/index.js";
 // import jwt from jwt
 
 export const isUser = async (req, res, next) => {
@@ -99,5 +100,14 @@ export const isValidUser = async (socket, next) => {
     logger.error("IS_ADMINISTER_FOR_SOCKET");
     logger.error(e);
     next(new Error("Authentication error"));
+  }
+};
+
+export const redirectGoogleAuthConsent = (req, res, next) => {
+  try {
+    const authUrl = `https://accounts.google.com/o/oauth2/auth?client_id=${config.CLIENT_ID}&redirect_uri=${config.REDIRECT_URI}&response_type=code&scope=openid%20email%20profile`;
+    res.redirect(authUrl);
+  } catch (e) {
+    return sendBadRequest(res, errorHelper(e, "REDIRECT_GOOGLE_CONSENT"));
   }
 };

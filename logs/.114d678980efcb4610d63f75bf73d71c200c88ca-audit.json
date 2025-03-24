@@ -59,6 +59,11 @@
             "date": 1742540517516,
             "name": "/Users/sahilpatoliya/Documents/Insta_Clone/logs/app-2025-03-21.log",
             "hash": "0356e7679187c14d67ecbe8f94aa80fd102e865385bfbb0437bf5540b1764cfd"
+        },
+        {
+            "date": 1742791624455,
+            "name": "/Users/sahilpatoliya/Documents/Insta_Clone/logs/app-2025-03-24.log",
+            "hash": "b62b7226b4d314518fc6b078493aa0017548858ea12ddd5e47c807d2006de8cd"
         }
     ],
     "hashType": "sha256"
