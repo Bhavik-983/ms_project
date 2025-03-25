@@ -1,7 +1,8 @@
-import createError from "http-errors";
-import express from "express";
-import path, { dirname } from "path";
 import {
+  createError,
+  express,
+  path,
+  dirname,
   cookieParser,
   compression,
   cors,

@@ -14,3 +14,6 @@ export { Server } from "socket.io";
 export { default as swaggerJsDoc } from "swagger-jsdoc";
 export { default as swaggerUi } from "swagger-ui-express";
 export { default as axios } from "axios";
+export { default as debugMessage } from "debug"
+export {default as createError} from "http-errors"
+export {default as path, dirname} from "path"

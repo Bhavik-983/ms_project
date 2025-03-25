@@ -1,7 +1,8 @@
-import createError from "http-errors";
-import express from "express";
-import path, { dirname } from "path";
 import {
+  createError,
+  express,
+  path,
+  dirname,
   cookieParser,
   compression,
   cors,
@@ -46,28 +47,28 @@ app.use(function (req, res, next) {
   next(createError(404));
 });
 
-cron.schedule(config.CRON_JOB, async () => {
-  // Runs every hour
-  try {
-    const expiredStories = await StoryModel.find({
-      createdAt: { $lt: new Date(Date.now() - 24 * 60 * 60 * 1000) },
-    });
+// cron.schedule(config.CRON_JOB, async () => {
+//   // Runs every hour
+//   try {
+//     const expiredStories = await StoryModel.find({
+//       createdAt: { $lt: new Date(Date.now() - 24 * 60 * 60 * 1000) },
+//     });
 
-    for (const story of expiredStories) {
-      const publicId = story.media_url.split("/").pop().split(".")[0]; // Extract public ID
-      await cloudinary.uploader.destroy(
-        `${config.MEDIA_ROOT}/stories/${story.fk_user_id
-          .toString()
-          .slice(-5)}/${publicId}`
-      );
-      await story.remove();
-    }
+//     for (const story of expiredStories) {
+//       const publicId = story.media_url.split("/").pop().split(".")[0]; // Extract public ID
+//       await cloudinary.uploader.destroy(
+//         `${config.MEDIA_ROOT}/stories/${story.fk_user_id
+//           .toString()
+//           .slice(-5)}/${publicId}`
+//       );
+//       await story.remove();
+//     }
 
-    console.log(`${expiredStories.length} expired stories deleted.`);
-  } catch (error) {
-    console.error("Error deleting expired stories:", error);
-  }
-});
+//     console.log(`${expiredStories.length} expired stories deleted.`);
+//   } catch (error) {
+//     console.error("Error deleting expired stories:", error);
+//   }
+// });
 
 // error handler
 app.use(function (err, req, res, next) {

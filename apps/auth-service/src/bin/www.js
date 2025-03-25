@@ -5,11 +5,10 @@
  */
 
 import app from "../app.js";
-import debugMessage from "debug";
 import http from "http";
 // import { instrument } from "@socket.io/admin-ui";
 // import { Server } from "socket.io";
-import { shutDown } from "@myorg/common";
+import { shutDown,debugMessage } from "@myorg/common";
 // import config from "../config/index.js";
 // import { setIoObject } from "../socket/socket_server.js";
 // import { socketConnection } from "../socket/socket_client.js";

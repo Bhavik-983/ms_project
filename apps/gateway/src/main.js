@@ -1,7 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import routes from "./gateway-route.js";
-import { cors } from "../../../packages/common/dist/builtin/index.js";
+
 
 dotenv.config();
 
