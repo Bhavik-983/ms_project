@@ -28,13 +28,7 @@ const userSchema = await mongoose.Schema(
       enum: ["PUBLIC", "PRIVATE"],
       default: "PUBLIC",
     },
-    github_id:{
-      type:String
-    },
-    google_id:{
-      type:String
-    },
-    facebook_id:{
+    social_auth_id:{
       type:String
     },
     isNewUser: { type: Boolean, default: false },

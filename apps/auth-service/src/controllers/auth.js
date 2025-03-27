@@ -17,11 +17,12 @@ import {
   UserModel,
   FollowerModel,
   imageUploader,
-  axios,
+  verifyUser,
+  socialFacebookAuth,
+  socialGoogleAuth,
+  socialGithubAuth,
 } from "@myorg/common";
 
-// http://localhost:8000/user/github/signup/redirect
-// http://localhost:5173/dashboard
 
 export const redirectGoogleAuthConsent = (req, res, next) => {
   try {
@@ -34,87 +35,29 @@ export const redirectGoogleAuthConsent = (req, res, next) => {
 export const googleAuth = async (req, res) => {
   try {
     const { code } = req.query;
-    if (!code)
-      return res.status(400).json({ error: "Authorization code is missing" });
-
-    const tokenResponse = await axios.post(
-      config.TOKEN_RESPONSE_URI
-      ,
-      {
+    if (!code) return sendBadRequest(res, messages.authCodeIsMissing)
+    const data = {
         code,
+        tkn_res_uri: config.TOKEN_RESPONSE_URI,
         client_id: config.CLIENT_ID,
         client_secret: config.CLIENT_SECRET,
         redirect_uri: config.REDIRECT_URI,
-        grant_type: "authorization_code",
-      }
-    );
-    const { access_token } = tokenResponse.data;
-
-    // Step 3: Fetch user details from Google
-    const userInfoResponse = await axios.get(
-      config.USER_INFO_URI,
-      {
-        headers: { Authorization: `Bearer ${access_token}` },
-      }
-    );
-
-    const user = userInfoResponse.data;
-    const isUser = await UserModel.findOne({
-      $or: [
-        { google_id: user.sub },  // Check by Google ID (sub)
-        { email: user.email }      // Check by Email
-      ]
-    });
-
-    const accessTokenId = tokenId();
-    const refreshTokenId = tokenId();
-    const accessToken = await generateAccessToken({
-      _id: user._id,
-      accessTokenId,
-    });
-    const refreshToken = await generateRefreshToken({
-      _id: user._id,
-      refreshTokenId,
-    });
-
-
-    if (!isUser) {
-      const newUser = new UserModel({
-        name: user.name,
-        email: user.email,
-        google_id: user.sub,
-        isNewUser: false
-      })
-      const result = await imageUploader(
-        user.picture,
-        "user_profile/" + newUser._id.toString().slice(-5)
-      );
-      newUser.profile_image.url = result.secure_url;
-      newUser.profile_image.public_id = result.public_id;
-      newUser.access_token_id = accessTokenId;
-      newUser.refresh_token_id = refreshTokenId;
-      await newUser.save()
-
-      return sendSuccess(res, { accessToken, refreshToken }, messages.registrationSuccess)
+        user_info_uri: config.USER_INFO_URI,
+        grant_type:"authorization_code"
     }
-    isUser.access_token_id = accessTokenId;
-    isUser.refresh_token_id = refreshTokenId;
-    await isUser.save();
-    return sendSuccess(
-      res,
-      {
-        accessToken,
-        refreshToken,
-      },
-      messages.loginSuccess
-    );
-    // Send user data to frontend (In real-world, store in DB & generate JWT session)
-    // res.redirect(
-    //   `${process.env.FRONTEND_URL}/dashboard?token=${id_token}&name=${user.name}&email=${user.email}&picture=${user.picture}`
-    // );
-  } catch (error) {
-    console.error("OAuth Error:", error.response?.data || error.message);
-    res.status(500).json({ error: "Failed to authenticate" });
+    const user = await socialGoogleAuth(data)
+    
+    const userData = {
+        name:user.name,
+        email:user.email,
+        picture:user.picture,
+        uid:user.sub
+    }
+   const {accessToken,refreshToken,message} = await verifyUser(userData)
+   
+   return sendSuccess(res,{accessToken,refreshToken},message)
+  } catch (e) {
+    return sendBadRequest(res,errorHelper(e,"GOOGLE_AUTH"))
   }
 };
 
@@ -125,84 +68,28 @@ export const redirectGithubAuthConsent = (req, res) => {
 export const githubAuth = async (req, res) => {
   try {
     const { code } = req.query
-    const tokenResponse = await axios.post(config.GITHUB_TOKEN_RESPONSE_URI, null, {
-      params: {
-        client_id: process.env.GITHUB_CLIENT_ID,
-        client_secret: process.env.GITHUB_CLIENT_SECRET,
-        code,
-      },
-      headers: { Accept: "application/json" },
-    });
-
-    const access_token = tokenResponse.data.access_token;
-
-    // Get user data from GitHub
-    const user = await axios.get(config.GITHUB_USER_INFO_URI, {
-      headers: { Authorization: `Bearer ${access_token}` },
-    });
-
-    const email = await axios.get(config.GITHUB_USER_EMAIL, {
-      headers: { Authorization: `Bearer ${access_token}` },
-    });
-    const primaryEmail = email.data.find(email => email.primary && email.verified)?.email || null;
-
-
-    const isUser = await UserModel.findOne({
-      $or: [
-        { githubId: user.data.id }, 
-        { email: primaryEmail }   
-      ]
-    });
-
-    const accessTokenId = tokenId();
-    const refreshTokenId = tokenId();
-    const accessToken = await generateAccessToken({
-      _id: user._id,
-      accessTokenId,
-    });
-    const refreshToken = await generateRefreshToken({
-      _id: user._id,
-      refreshTokenId,
-    });
-
-
-    if (!isUser) {
-      const newUser = new UserModel({
-        name: user.data.login,
-        email: primaryEmail,
-        github_id:user.data.id,
-        isNewUser: false
-      })
-      const result = await imageUploader(
-        user.data.avatar_url,
-        "user_profile/" + newUser._id.toString().slice(-5)
-      );
-      newUser.profile_image.url = result.secure_url;
-      newUser.profile_image.public_id = result.public_id;
-      newUser.access_token_id = accessTokenId;
-      newUser.refresh_token_id = refreshTokenId;
-      await newUser.save()
-
-      return sendSuccess(res, { accessToken, refreshToken }, messages.registrationSuccess)
+    if (!code) return sendBadRequest(res, messages.authCodeIsMissing)
+    const data = {
+      code,
+      tkn_res_uri: config.GITHUB_TOKEN_RESPONSE_URI,
+      client_id: config.GITHUB_CLIENT_ID,
+      client_secret: config.GITHUB_CLIENT_SECRET,
+      user_info_uri: config.GITHUB_USER_INFO_URI,
+      user_email_uri:config.GITHUB_USER_EMAIL
+      
     }
-    isUser.access_token_id = accessTokenId;
-    isUser.refresh_token_id = refreshTokenId;
-    await isUser.save();
-    return sendSuccess(
-      res,
-      {
-        accessToken,
-        refreshToken,
-      },
-      messages.loginSuccess
-    );
-    // Send user data to frontend (In real-world, store in DB & generate JWT session)
-    // res.redirect(
-    //   `${process.env.FRONTEND_URL}/dashboard?token=${id_token}&name=${user.name}&email=${user.email}&picture=${user.picture}`
-    // );
-  } catch (error) {
-    console.error("OAuth Error:", error.response?.data || error.message);
-    res.status(500).json({ error: "Failed to authenticate" });
+    const user = await socialGithubAuth(data)
+    const userData = {
+      name:user.user.login,
+      email:user.primaryEmail,
+      picture:user.user.avatar_url,
+      uid:user.user.id
+  }
+
+  const {accessToken,refreshToken,message} = await verifyUser(userData)
+  return sendSuccess(res,{accessToken,refreshToken},message)
+  } catch (e) {
+    return sendBadRequest(res,errorHelper(e,"GITHUB_AUTH"))
   }
 };
 
@@ -213,72 +100,26 @@ export const redirectFacebookAuthConsent = (req, res) => {
 export const facebookAuth = async (req, res) => {
   try {
     const { code } = req.query
-    const tokenResponse = await axios.post(config.FACEBOOK_TOKEN_RESPONSE_URI, null, {
-      params: {
-        client_id: config.FACEBOOK_APP_ID,
-        client_secret: config.FACEBOOK_APP_SECRET,
-        redirect_uri: config.FACEBOOK_REDIRECT_URI,
-        code,
-      },
-      headers: { Accept: "application/json" },
-    });
-
-    const access_token = tokenResponse.data.access_token;
-
-    // Get user data from GitHub
-    const user = await axios.get(config.FACEBOOK_USER_INFO_URI, {
-      params: { fields: "id,name,email,picture", access_token: access_token },
-    });
-
-    const isUser = await UserModel.findOne({
-      $or: [
-        { facebook_id: user.data.id }, 
-        { email:  user.data.email }   
-      ]
-    });
-
-    const accessTokenId = tokenId();
-    const refreshTokenId = tokenId();
-    const accessToken = await generateAccessToken({
-      _id: user._id,
-      accessTokenId,
-    });
-    const refreshToken = await generateRefreshToken({
-      _id: user._id,
-      refreshTokenId,
-    });
-
-
-    if (!isUser) {
-      const newUser = new UserModel({
-        name: user.data.name,
-        email: user.data.email,
-        facebook_id:user.data.id,
-        isNewUser: false
-      })
-      const result = await imageUploader(
-        user.data.picture.data.url,
-        "user_profile/" + newUser._id.toString().slice(-5)
-      );
-      newUser.profile_image.url = result.secure_url;
-      newUser.profile_image.public_id = result.public_id;
-      newUser.access_token_id = accessTokenId;
-      newUser.refresh_token_id = refreshTokenId;
-      await newUser.save()
-
-      return sendSuccess(res, { accessToken, refreshToken }, messages.registrationSuccess)
+    const data = {
+      code,
+      tkn_res_uri: config.FACEBOOK_TOKEN_RESPONSE_URI,
+      client_id: config.FACEBOOK_APP_ID,
+      client_secret: config.FACEBOOK_APP_SECRET,
+      redirect_uri: config.FACEBOOK_REDIRECT_URI,
+      user_info_uri: config.FACEBOOK_USER_INFO_URI,
     }
-    isUser.access_token_id = accessTokenId;
-    isUser.refresh_token_id = refreshTokenId;
-    await isUser.save();
-    return sendSuccess(
-      res,
-      {
-        accessToken,
-        refreshToken,
-      },
-      messages.loginSuccess
-    );
+    const user = await socialFacebookAuth(data)
+    const userData = {
+      name:user.name,
+      email:user.email,
+      picture:user.picture.data.url,
+      uid:user.id
+  }
+
+  const {accessToken,refreshToken,message} = await verifyUser(userData)
+
+  return sendSuccess(res,{accessToken,refreshToken},message)
+
     // Send user data to frontend (In real-world, store in DB & generate JWT session)
     // res.redirect(
     //   `${process.env.FRONTEND_URL}/dashboard?token=${id_token}&name=${user.name}&email=${user.email}&picture=${user.picture}`
@@ -288,8 +129,6 @@ export const facebookAuth = async (req, res) => {
     res.status(500).json({ error: "Failed to authenticate" });
   }
 };
-
-
 
 export const registration = async (req, res) => {
   try {
