@@ -2,13 +2,13 @@ import { Button } from "@mui/material";
 
 const OAuthButton = () => (
   <>
-    <Button href="http://localhost:8000/user/auth/google">
+    <Button href="http://localhost:8000/user/auth">
       Signup with Google
     </Button>
-    <Button href="http://localhost:3005/api/auth/facebook">
+    <Button href="http://localhost:8000/user/facebook/auth">
       Signup with Facebook
     </Button>
-    <Button href="http://localhost:3005/api/auth/github">
+    <Button href="http://localhost:8000/user/github/auth">
       Signup with GitHub
     </Button>
   </>

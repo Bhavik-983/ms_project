@@ -5,8 +5,6 @@ import {
   forgotPasswordSchema,
   isUser,
   loginSchema,
-  redirectGoogleAuthConsent,
-  requestSchema,
   signupSchema,
   tokenSchema,
   upload,
@@ -20,6 +18,7 @@ import {
   followUser,
   forgotPassword,
   generateNewAccessAndRefreshToken,
+  redirectGoogleAuthConsent,
   googleAuth,
   login,
   registration,
@@ -28,20 +27,29 @@ import {
   updateProfile,
   userFollowList,
   verifyToken,
+  redirectGithubAuthConsent,
+  githubAuth,
+  redirectFacebookAuthConsent,
+  facebookAuth,
 } from "../controllers/auth.js";
 
 const router = express.Router();
 
-// app.get("/signup/redirect", googleAuth);
--(
-  // app.get("/auth", redirectGoogleAuthConsent);
+router.get("/auth", redirectGoogleAuthConsent);
+router.get("/google/redirect", googleAuth);
 
-  router.post(
-    "/registration",
-    validateSchema({ body: signupSchema }),
-    registration
-  )
-);
+router.get("/github/auth", redirectGithubAuthConsent);
+router.get("/github/redirect", githubAuth);
+
+router.get("/facebook/auth", redirectFacebookAuthConsent);
+router.get("/facebook/redirect", facebookAuth);
+
+
+router.post(
+  "/registration",
+  validateSchema({ body: signupSchema }),
+  registration
+)
 
 router.post("/login", validateSchema({ body: loginSchema }), login);
 
