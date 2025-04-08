@@ -1,3 +1,4 @@
+
 import {
   sendBadRequest,
   sendSuccess,
@@ -10,7 +11,6 @@ import {
   config,
   crypto,
   sendBadRequestWith401Code,
-  sendTextMail,
   sendBadRequestWith406Code,
   cloudinary,
   deleteFromCloudinary,
@@ -22,6 +22,8 @@ import {
   socialGoogleAuth,
   socialGithubAuth,
 } from "@myorg/common";
+
+
 
 
 export const redirectGoogleAuthConsent = (req, res, next) => {
@@ -37,29 +39,48 @@ export const googleAuth = async (req, res) => {
     const { code } = req.query;
     if (!code) return sendBadRequest(res, messages.authCodeIsMissing)
     const data = {
-        code,
-        tkn_res_uri: config.TOKEN_RESPONSE_URI,
-        client_id: config.CLIENT_ID,
-        client_secret: config.CLIENT_SECRET,
-        redirect_uri: config.REDIRECT_URI,
-        user_info_uri: config.USER_INFO_URI,
-        grant_type:"authorization_code"
+      code,
+      tkn_res_uri: config.TOKEN_RESPONSE_URI,
+      client_id: config.CLIENT_ID,
+      client_secret: config.CLIENT_SECRET,
+      redirect_uri: config.REDIRECT_URI,
+      user_info_uri: config.USER_INFO_URI,
+      grant_type: "authorization_code"
     }
     const user = await socialGoogleAuth(data)
+
     
     const userData = {
-        name:user.name,
-        email:user.email,
-        picture:user.picture,
-        uid:user.sub
+      name: user.name,
+      email: user.email,
+      picture: user.picture,
+      uid: user.sub
     }
-   const {accessToken,refreshToken,message} = await verifyUser(userData)
-   
-   return sendSuccess(res,{accessToken,refreshToken},message)
+    const { accessToken, refreshToken } = await verifyUser(userData)
+    res.cookie("accessToken", accessToken, {
+      httpOnly: true,
+      secure: true, // true in production
+      sameSite: "Lax",
+      maxAge: 24 * 60 * 60 * 1000, // 1 day
+    });
+
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "Lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
+
+    console.log("yhsadhfufhudgdasudlsnuaf");
+    
+
+    res.redirect(`http://localhost:5173/dashboard`);
+
   } catch (e) {
-    return sendBadRequest(res,errorHelper(e,"GOOGLE_AUTH"))
+    return sendBadRequest(res, errorHelper(e, "GOOGLE_AUTH"))
   }
 };
+
 
 export const redirectGithubAuthConsent = (req, res) => {
   res.redirect(config.GITHUB_AUTH_URI);
@@ -75,21 +96,35 @@ export const githubAuth = async (req, res) => {
       client_id: config.GITHUB_CLIENT_ID,
       client_secret: config.GITHUB_CLIENT_SECRET,
       user_info_uri: config.GITHUB_USER_INFO_URI,
-      user_email_uri:config.GITHUB_USER_EMAIL
-      
+      user_email_uri: config.GITHUB_USER_EMAIL
+
     }
     const user = await socialGithubAuth(data)
     const userData = {
-      name:user.user.login,
-      email:user.primaryEmail,
-      picture:user.user.avatar_url,
-      uid:user.user.id
-  }
+      name: user.user.login,
+      email: user.primaryEmail,
+      picture: user.user.avatar_url,
+      uid: user.user.id
+    }
 
-  const {accessToken,refreshToken,message} = await verifyUser(userData)
-  return sendSuccess(res,{accessToken,refreshToken},message)
+    const { accessToken, refreshToken } = await verifyUser(userData)
+    res.cookie("accessToken", accessToken, {
+      httpOnly: true,
+      secure: true, // true in production
+      sameSite: "Lax",
+      maxAge: 24 * 60 * 60 * 1000, // 1 day
+    });
+
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "Lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
+
+    res.redirect(`http://localhost:5173/dashboard`);
   } catch (e) {
-    return sendBadRequest(res,errorHelper(e,"GITHUB_AUTH"))
+    return sendBadRequest(res, errorHelper(e, "GITHUB_AUTH"))
   }
 };
 
@@ -110,20 +145,29 @@ export const facebookAuth = async (req, res) => {
     }
     const user = await socialFacebookAuth(data)
     const userData = {
-      name:user.name,
-      email:user.email,
-      picture:user.picture.data.url,
-      uid:user.id
-  }
+      name: user.name,
+      email: user.email,
+      picture: user.picture.data.url,
+      uid: user.id
+    }
 
-  const {accessToken,refreshToken,message} = await verifyUser(userData)
+    const { accessToken, refreshToken } = await verifyUser(userData)
 
-  return sendSuccess(res,{accessToken,refreshToken},message)
+    res.cookie("accessToken", accessToken, {
+      httpOnly: true,
+      secure: true, // true in production
+      sameSite: "Lax",
+      maxAge: 24 * 60 * 60 * 1000, // 1 day
+    });
 
-    // Send user data to frontend (In real-world, store in DB & generate JWT session)
-    // res.redirect(
-    //   `${process.env.FRONTEND_URL}/dashboard?token=${id_token}&name=${user.name}&email=${user.email}&picture=${user.picture}`
-    // );
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "Lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
+
+    res.redirect(`http://localhost:5173/dashboard`);
   } catch (error) {
     console.error("OAuth Error:", error.response?.data || error.message);
     res.status(500).json({ error: "Failed to authenticate" });
@@ -139,18 +183,18 @@ export const registration = async (req, res) => {
 
     const newUser = await new UserModel({
       ...data,
-      set_password_token: crypto.randomBytes(30).toString("hex"),
-      set_password_token_exp_time: new Date(
-        new Date().getTime() + 60 * 1440 * 1000
-      ),
-      isNewUser: true,
-    }).save();
-    await sendTextMail(
-      [data?.email],
-      config.SG_MAIL,
-      "Set password",
-      `url:http://localhost:5173/set/password/${newUser.set_password_token}`
-    );
+      password: await bcrypt.hashSync(data?.password, 10)
+    })
+
+    if (req.file) {
+     const result = await imageUploader(
+        req.file.path,
+        "user_profile/" + newUser._id.toString().slice(-5)
+      );
+      newUser.profile_image.url = result?.secure_url,
+      newUser.profile_image.public_id = result?.public_id
+    }
+    await newUser.save()
 
     return sendSuccess(res, messages.registrationSuccess);
   } catch (e) {
@@ -237,8 +281,6 @@ export const setPassword = async (req, res) => {
   try {
     const data = req?.body;
 
-    console.log("tokkkenenne", data);
-
     const user = await UserModel.findOne({ set_password_token: data?.token });
     if (!user) return sendBadRequest(res, messages?.tokenNotExist);
 
@@ -246,37 +288,28 @@ export const setPassword = async (req, res) => {
     if (!(currentTime < user.set_password_token_exp_time))
       return sendBadRequestWith401Code(res, messages.tokenExpiredError);
 
-    if (user && user.password) {
-      user.password = await bcrypt.hashSync(data.password, 10);
-      await user.save();
-      await UserModel.update(
-        {
-          _id: user._id,
-        },
-        {
-          $unset: {
-            set_password_token: "",
-            set_password_token_exp_time: "",
-          },
-        }
-      );
+    // if (user && user.password) {
+    //   user.password = await bcrypt.hashSync(data.password, 10);
+    //   await user.save();
+    //   await UserModel.update(
+    //     {
+    //       _id: user._id,
+    //     },
+    //     {
+    //       $unset: {
+    //         set_password_token: "",
+    //         set_password_token_exp_time: "",
+    //       },
+    //     }
+    //   );
 
-      return sendSuccess(res, messages.passwordResetSuccessfully);
-    }
+    //   return sendSuccess(res, messages.passwordResetSuccessfully);
+    // }
 
-    user.name = data.name;
-    if (req.file) {
-      const result = await imageUploader(
-        req.file.path,
-        "user_profile/" + user._id.toString().slice(-5)
-      );
-      user.profile_image.url = result.secure_url;
-      user.profile_image.public_id = result.public_id;
-    }
+
     user.password = await bcrypt.hashSync(data?.password, 10);
     user.set_password_token = undefined;
     user.set_password_token_exp_time = undefined;
-    user.isNewUser = false;
     await user.save();
     return sendSuccess(res, messages?.passwordSetSuccessfully);
   } catch (e) {
@@ -325,21 +358,21 @@ export const forgotPassword = async (req, res) => {
     );
 
     await user.save();
-    if (user.isNewUser === true) {
-      await sendTextMail(
-        [data?.email],
-        config.SG_MAIL,
-        "Set password",
-        `url: http:192.168.29.5:5000/set-password/${user.set_password_token}`
-      );
-    } else {
-      await sendTextMail(
-        [data?.email],
-        config.SG_MAIL,
-        "Set password",
-        `url: http:192.168.29.5:5000/reset-password/${user.set_password_token}`
-      );
-    }
+    // if (user.isNewUser === true) {
+    //   await sendTextMail(
+    //     [data?.email],
+    //     config.SG_MAIL,
+    //     "Set password",
+    //     `url: http:192.168.29.5:5000/set-password/${user.set_password_token}`
+    //   );
+    // } else {
+    //   await sendTextMail(
+    //     [data?.email],
+    //     config.SG_MAIL,
+    //     "Set password",
+    //     `url: http:192.168.29.5:5000/reset-password/${user.set_password_token}`
+    //   );
+    // }
 
     return sendSuccess(res, messages.linkSendSuccessfully);
   } catch (e) {

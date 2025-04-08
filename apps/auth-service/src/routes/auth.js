@@ -11,6 +11,7 @@ import {
   userIdSchema,
   validateSchema,
   verifyTokenSchema,
+  verifyUserToken,
 } from "@myorg/common";
 import {
   acceptOrRejectFollowers,
@@ -31,11 +32,12 @@ import {
   githubAuth,
   redirectFacebookAuthConsent,
   facebookAuth,
+
 } from "../controllers/auth.js";
 
 const router = express.Router();
 
-router.get("/auth", redirectGoogleAuthConsent);
+router.get("/google/auth", redirectGoogleAuthConsent);
 router.get("/google/redirect", googleAuth);
 
 router.get("/github/auth", redirectGithubAuthConsent);
@@ -44,9 +46,12 @@ router.get("/github/redirect", githubAuth);
 router.get("/facebook/auth", redirectFacebookAuthConsent);
 router.get("/facebook/redirect", facebookAuth);
 
+router.get("/verify/user", verifyUserToken);
+
 
 router.post(
   "/registration",
+  upload.single("image"),
   validateSchema({ body: signupSchema }),
   registration
 )

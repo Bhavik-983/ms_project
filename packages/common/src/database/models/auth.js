@@ -31,7 +31,7 @@ const userSchema = await mongoose.Schema(
     social_auth_id:{
       type:String
     },
-    isNewUser: { type: Boolean, default: false },
+
   },
   { timestamps: true }
 );

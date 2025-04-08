@@ -2,13 +2,14 @@ import jwt from "jsonwebtoken";
 import {
   sendBadRequest,
   sendBadRequestWith406Code,
+  sendSuccess,
 } from "../../utilities/response/index.js";
 import messages from "../../utilities/messages.js";
 import config from "../../config/index.js";
 import logger from "../../utilities/logger.js";
 import { UserModel } from "../../database/index.js";
 import { validateAccessToken } from "../../helper/accessTokenHelper.js";
-import { errorHelper } from "../../../dist/index.js";
+import { errorHelper } from "../../helper/errorHelper.js";
 // import jwt from jwt
 
 export const isUser = async (req, res, next) => {
@@ -111,3 +112,38 @@ export const redirectGoogleAuthConsent = (req, res, next) => {
     return sendBadRequest(res, errorHelper(e, "REDIRECT_GOOGLE_CONSENT"));
   }
 };
+
+
+export const verifyUserToken = async(req,res) => {
+  try{
+    const token = req.cookies.accessToken;
+    if(!token) return sendBadRequest(res,messages.tokenFormatInvalid)
+
+      const user = jwt.verify(token, config.USER_SECRET); // your JWT logic
+
+      if (!user || !user._id) {
+        return sendBadRequestWith406Code(res, messages.tokenFormatInvalid);
+      }
+  
+      // Use the passed `models` directly
+      const userDetails = await UserModel.findOne(
+        { _id: user._id },
+        { access_token_id: 1, _id: 1, name: 1, profile_image: 1 }
+      );
+  
+      if (!userDetails) {
+        return sendBadRequest(res, messages.userNotFound);
+      }
+  
+      if (user.accessTokenId !== userDetails.access_token_id) {
+        return sendBadRequestWith406Code(res, messages.invalidToken);
+      }
+      const resData = {
+        name:userDetails.name,
+        profile_image:userDetails.profile_image
+      }
+      return sendSuccess(res,resData,messages.loginSuccess)
+  }catch(e){
+    return sendBadRequest(res, errorHelper(e, "VERIFY_USER_TOKEN"));
+  }
+}

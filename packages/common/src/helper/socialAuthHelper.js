@@ -26,7 +26,7 @@ async function socialGoogleAuth(data) {
             headers: { Authorization: `Bearer ${access_token}` },
         }
     );
-  
+
     return user.data
 }
 
@@ -91,11 +91,11 @@ async function verifyUser(user) {
     const accessTokenId = tokenId();
     const refreshTokenId = tokenId();
     const accessToken = await generateAccessToken({
-        _id: user._id,
+        _id: isUser._id,
         accessTokenId,
     });
     const refreshToken = await generateRefreshToken({
-        _id: user._id,
+        _id: isUser._id,
         refreshTokenId,
     });
 
@@ -104,7 +104,7 @@ async function verifyUser(user) {
             name: user.name,
             email: user.email,
             social_auth_id: user.uid,
-            isNewUser: false
+   
         })
         const result = await imageUploader(
             user.picture,
